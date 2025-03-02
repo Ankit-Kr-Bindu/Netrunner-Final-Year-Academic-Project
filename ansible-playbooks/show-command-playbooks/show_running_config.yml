@@ -1,0 +1,17 @@
+- name: Show Running Config
+  hosts: "{{ target }}"
+  gather_facts: no
+  tasks:
+    - name: Show Running Config
+      ios_command:
+        commands:
+          - show running-config
+      register: running_config_result
+      tags:
+        - sh_run
+
+    - name: Display result
+      debug:
+        var: running_config_result.stdout_lines
+      tags:
+        - sh_run

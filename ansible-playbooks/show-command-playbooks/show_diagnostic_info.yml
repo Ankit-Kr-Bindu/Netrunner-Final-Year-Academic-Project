@@ -1,0 +1,53 @@
+# diagnostics.yml
+- name: Show Diagnostic Information
+  hosts: "{{ target }}"
+  gather_facts: no
+  tasks:
+    - name: Show Diagnostic Result
+      ios_command:
+        commands:
+          - show diagnostic result
+      register: diagnostic_result
+
+    - name: Show Interface Status
+      ios_command:
+        commands:
+          - show interfaces GigabitEthernet0/1
+      register: interface_status
+
+    - name: Show CPU Usage
+      ios_command:
+        commands:
+          - show processes cpu
+      register: cpu_usage
+
+    - name: Show Power Supply Status
+      ios_command:
+        commands:
+          - show power
+      register: power_status
+
+    - name: Show Hardware Information
+      ios_command:
+        commands:
+          - show hardware
+      register: hardware_info
+
+    - name: Show System Logs
+      ios_command:
+        commands:
+          - show logging
+      register: sys_logs
+
+    - name: Display Diagnostic Information
+      debug:
+        var:
+          diagnostic_result: "{{ diagnostic_result }}"
+          interface_status: "{{ interface_status }}"
+          cpu_usage: "{{ cpu_usage }}"
+          power_status: "{{ power_status }}"
+          hardware_info: "{{ hardware_info }}"
+          sys_logs: "{{ sys_logs }}"
+      tags:    
+        - sh_diagnostic_info    
+        

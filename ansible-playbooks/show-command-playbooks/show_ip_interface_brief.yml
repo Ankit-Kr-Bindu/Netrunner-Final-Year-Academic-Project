@@ -1,0 +1,17 @@
+- name: Show IP Interface Brief
+  hosts: "{{ target }}"
+  gather_facts: no
+  tasks:
+    - name: Show IP Interface Brief
+      ios_command:
+        commands:
+          - show ip interface brief
+      register: running_config_result
+      tags:
+        - sh_ip_int_br
+
+    - name: Display result
+      debug:
+        var: running_config_result.stdout_lines
+      tags:
+        - sh_ip_int_br

@@ -1,0 +1,12 @@
+---
+- name: Test connection to Main branch switch
+  hosts: "{{ target }}"
+  gather_facts: no
+  tasks:
+    - name: Ping Ubuntu VM  5 times
+      command: ping -c 5 192.168.80.129
+      register: ping_result
+  
+    - name: Display ping result
+      debug:
+        var: ping_result.stdout_lines

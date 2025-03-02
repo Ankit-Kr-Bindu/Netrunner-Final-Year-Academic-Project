@@ -1,0 +1,17 @@
+- name: Show Spanning Tree
+  hosts: "{{ target }}"
+  gather_facts: no
+  tasks:
+    - name: Show Spanning Tree
+      ios_command:
+        commands:
+          - show spanning-tree
+      register: running_config_result
+      tags:
+        - sh_spanning_tree
+
+    - name: Display result
+      debug:
+        var: running_config_result.stdout_lines
+      tags:
+        - sh_spanning_tree

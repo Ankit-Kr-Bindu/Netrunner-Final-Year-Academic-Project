@@ -1,0 +1,24 @@
+---
+- name: Configure VLAN
+  hosts: "{{ target }}"
+  gather_facts: no
+  vars_prompt:
+    - name: vlan_id
+      prompt: "Enter VLAN ID"
+      private: no
+    - name: vlan_name
+      prompt: "Enter VLAN Name"
+      private: no
+  tasks:
+    - name: Configure VLAN on switch
+      ios_config:
+        lines:
+          - "vlan {{ vlan_id }}"
+          - "name {{ vlan_name }}"
+        register: vlan_config
+        tags: 
+          - vlan_configuration
+          
+    - name: Print VLAN configuration result
+      debug:
+      var: vlan_config
