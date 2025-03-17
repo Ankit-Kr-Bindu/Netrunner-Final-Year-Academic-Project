@@ -199,7 +199,7 @@ const Inventory: React.FC = () => {
     <div className="p-1">
       {/* Tabbed Navigation Selector */}
       <div className="mb-4">
-        <div className="flex border-b border-gray-200">
+        <div className="flex">
           <button
             onClick={() => setSelection("host")}
             className={`px-8 py-3 text-lg font-semibold transition-all duration-300 ease-in-out ${
