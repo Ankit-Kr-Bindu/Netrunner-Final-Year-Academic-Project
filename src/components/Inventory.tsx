@@ -35,6 +35,7 @@ const Inventory: React.FC = () => {
     fetchHosts();
     fetchGroups();
     fetchInventory();
+    fetchGroupHosts();
   }, []);
 
   // Fetch all hosts
