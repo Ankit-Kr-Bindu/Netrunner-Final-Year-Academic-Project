@@ -1,26 +1,36 @@
 mod fetch_playbooks;
-mod tauri_api;
+mod inventory;
 mod fetch_inventory;
 
 pub fn run() {
-    if let Err(e) = tauri_api::create_db() {
+    // Initialize the database
+    if let Err(e) = inventory::create_db() {
         eprintln!("Error while creating database: {}", e);
         return;
     }
-    tauri_api::run();
+
+    // Run Tauri application
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             fetch_playbooks::list_playbooks,
-            tauri_api::add_host,
-            tauri_api::get_hosts,
-            tauri_api::add_group,
-            tauri_api::get_groups,
-            tauri_api::remove_host,
-            tauri_api::modify_host,
-            tauri_api::remove_group,
-            tauri_api::modify_group,
+            inventory::add_host,
+            inventory::get_hosts,
+            inventory::add_group,
+            inventory::get_groups,
+            inventory::remove_host,
+            inventory::modify_host,
+            inventory::remove_group,
+            inventory::modify_group,
             fetch_inventory::fetch_inventory,
+            inventory::assign_host_to_group,
+            inventory::reassign_host_to_group,
+            inventory::remove_host_from_group,
+            inventory::view_inventory,
         ])
+        .setup(|_app| {
+            // Disable icon loading
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running Tauri application");
 }

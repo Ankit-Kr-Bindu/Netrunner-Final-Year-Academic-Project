@@ -2,13 +2,14 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Inventory from "./components/Inventory";
 import PlaybookSelector from "./components/PlaybookSelector";
+import InventorySelector from "./components/InventorySelector";
 import "./main.css"; // Ensure you are importing the main.css file
 
 function App() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [selectedPlaybook, setSelectedPlaybook] = useState<string | null>(null);
 
-  const menuItems = ["Dashboard", " Run Playbooks", "Inventory", "Logout"];
+  const menuItems = ["Dashboard", " Run Playbooks", "Inventory Manager", "Logout"];
 
   return (
     <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
@@ -21,8 +22,11 @@ function App() {
       <main className="flex-1 p-4">
         <h1 className="text-3xl font-bold mb-4">{selectedItem}</h1>
         {selectedItem === " Run Playbooks" ? (
+          <>
           <PlaybookSelector setSelectedPlaybook={setSelectedPlaybook} />
-        ) : selectedItem === "Inventory" ? (
+          <InventorySelector />
+          </>
+        ) : selectedItem === "Inventory Manager" ? (
           <Inventory />
         ) : selectedItem === "Dashboard" ? (
           <p>Welcome to the Dashboard!</p>
