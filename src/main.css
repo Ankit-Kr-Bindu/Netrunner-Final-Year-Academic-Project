@@ -4,11 +4,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Love+Light&family=Rubik+Puddles&display=swap');
 
 :root {
-  transition: background-color 500ms ease-in, color 500ms ease-in;
+  transition: background-color 200ms ease-in, color 200ms ease-in;
 }
 
 :root.dark {
-  transition: background-color 500ms ease-in, color 500ms ease-in;
+  transition: background-color 200ms ease-in, color 200ms ease-in;
 }
 
 @keyframes pop {
@@ -27,7 +27,7 @@
 }
 
 .transition-transform {
-  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+  transition: transform 500ms ease-in-out, opacity 1s ease-in-out;
 }
 
 .scale-110 {

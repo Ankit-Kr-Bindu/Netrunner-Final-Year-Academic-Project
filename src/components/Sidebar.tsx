@@ -10,13 +10,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ menuItems, selectedItem, setSelectedItem, setSelectedPlaybook }) => {
   return (
-    <aside className="w-64 bg-gray-300 dark:bg-gray-800 text-black dark:text-white flex flex-col">
+    <aside className="w-64 h-full bg-gray-300 dark:bg-gray-800 text-black dark:text-white flex flex-col">
       <div className="flex items-center justify-between text-3xl font-bold pl-10 pt-2 pr-4">
         <span className="font-rubik-puddles ">Netrunner</span>
       </div>
       <div className="pl-20 text-black dark:text-white font-bold text-sm">Developed by:</div>
       <div className="pl-14 pb-4 text-black dark:text-white text-2xl font-love-light">Ankit Kumar Bindu</div>
-      <nav className="flex-1 p-2">
+      <nav className="flex-1 p-2 overflow-y-auto">
         <ul>
           {menuItems.map((item) => (
             <li

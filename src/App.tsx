@@ -12,14 +12,14 @@ function App() {
   const menuItems = ["Dashboard", " Run Playbooks", "Inventory Manager", "Logout"];
 
   return (
-    <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+    <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white overflow-y-auto">
       <Sidebar
         menuItems={menuItems}
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         setSelectedPlaybook={setSelectedPlaybook}
       />
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-4">{selectedItem}</h1>
         {selectedItem === " Run Playbooks" ? (
           <>

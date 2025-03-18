@@ -156,7 +156,7 @@ const Inventory: React.FC = () => {
     if (reassignHostId && reassignGroupId) {
       try {
         const host = hosts.find((h) => h.id === reassignHostId);
-        const oldGroup = inventory.find(([group, hostName]) => hostName === host?.name)?.[0];
+        const oldGroup = inventory.find(([_, hostName]) => hostName === host?.name)?.[0];
         const newGroup = groups.find((g) => g.id === reassignGroupId);
 
         if (host && oldGroup && newGroup) {
@@ -294,7 +294,7 @@ const Inventory: React.FC = () => {
             <select
               value={selectedHostId || ""}
               onChange={(e) => setSelectedHostId(Number(e.target.value))}
-              className="p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+              className="p-2 border rounded bg-white dark:bg-gray-800 dark:text-black"
             >
               <option value="">Select Host</option>
               {hosts.map((host) => (
@@ -306,7 +306,7 @@ const Inventory: React.FC = () => {
             <select
               value={selectedGroupId || ""}
               onChange={(e) => setSelectedGroupId(Number(e.target.value))}
-              className="p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+              className="p-2 border rounded bg-white dark:bg-gray-800 dark:text-black"
             >
               <option value="">Select Group</option>
               {groups.map((group) => (
@@ -543,7 +543,7 @@ const Inventory: React.FC = () => {
                             <select
                               value={reassignGroupId || ""}
                               onChange={(e) => setReassignGroupId(Number(e.target.value))}
-                              className="p-1 border rounded bg-white dark:bg-gray-800 dark:text-white text-sm"
+                              className="p-1 border rounded bg-white dark:bg-gray-800 dark:text-black text-sm"
                             >
                               <option value="">Select Group</option>
                               {groups.map((group) => (
