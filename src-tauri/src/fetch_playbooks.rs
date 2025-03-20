@@ -3,7 +3,7 @@ use std::path::Path;
 
 #[tauri::command]
 pub fn list_playbooks() -> Result<Vec<String>, String> {
-    let playbooks_dir = "/Users/mac-air/Documents/FYP-tailwind/ansible-playbooks";
+    let playbooks_dir = "./ansible-playbooks";
     let mut playbooks = Vec::new();
 
     fn visit_dirs(dir: &Path, playbooks: &mut Vec<String>) -> std::io::Result<()> {
