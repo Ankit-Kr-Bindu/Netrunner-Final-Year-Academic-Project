@@ -6,6 +6,8 @@ pub struct Host {
     pub id: i32,
     pub name: String,
     pub ip_address: Option<String>,
+    pub username: Option<String>,
+    pub password: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -22,7 +24,9 @@ pub fn create_db() -> Result<()> {
         "CREATE TABLE IF NOT EXISTS hosts (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL UNIQUE,
-            ip_address TEXT
+            ip_address TEXT,
+            username TEXT,
+            password TEXT
         )",
         [],
     )?;
@@ -51,13 +55,21 @@ pub fn create_db() -> Result<()> {
 
 // Add a host to the database
 #[tauri::command]
-pub fn add_host(name: String, ip_address: Option<String>) -> Result<(), String> {
-    let conn = Connection::open("inventory.db").map_err(|e| e.to_string())?;
+pub fn add_host(name: String, ip_address: Option<String>, username: Option<String>, password: Option<String>) -> Result<(), String> {
+    println!("Adding host: name={}, ip_address={:?}, username={:?}, password={:?}", name, ip_address, username, password); // Debugging
+    let conn = Connection::open("inventory.db").map_err(|e| {
+        println!("Failed to open database connection: {}", e); // Debugging
+        e.to_string()
+    })?;
     conn.execute(
-        "INSERT OR IGNORE INTO hosts (name, ip_address) VALUES (?1, ?2)",
-        params![name, ip_address],
+        "INSERT OR IGNORE INTO hosts (name, ip_address, username, password) VALUES (?1, ?2, ?3, ?4)",
+        params![name, ip_address, username, password],
     )
-    .map_err(|e| e.to_string())?;
+    .map_err(|e| {
+        println!("Failed to execute query: {}", e); // Debugging
+        e.to_string()
+    })?;
+    println!("Host added successfully!"); // Debugging
     Ok(())
 }
 
@@ -66,7 +78,7 @@ pub fn add_host(name: String, ip_address: Option<String>) -> Result<(), String> 
 pub fn get_hosts() -> Result<Vec<Host>, String> {
     let conn = Connection::open("inventory.db").map_err(|e| e.to_string())?;
     let mut stmt = conn
-        .prepare("SELECT id, name, ip_address FROM hosts")
+        .prepare("SELECT id, name, ip_address, username, password FROM hosts")
         .map_err(|e| e.to_string())?;
     let hosts = stmt
         .query_map([], |row| {
@@ -74,6 +86,8 @@ pub fn get_hosts() -> Result<Vec<Host>, String> {
                 id: row.get(0)?,
                 name: row.get(1)?,
                 ip_address: row.get(2)?,
+                username: row.get(3)?,
+                password: row.get(4)?,
             })
         })
         .map_err(|e| e.to_string())?
@@ -122,11 +136,23 @@ pub fn remove_host(id: i32) -> Result<(), String> {
 
 // Modify a host in the database
 #[tauri::command]
-pub fn modify_host(id: i32, name: String, ip_address: Option<String>) -> Result<(), String> {
+pub fn modify_host(id: i32, name: String, ip_address: Option<String>, username: Option<String>, password: Option<String>) -> Result<(), String> {
     let conn = Connection::open("inventory.db").map_err(|e| e.to_string())?;
     conn.execute(
-        "UPDATE hosts SET name = ?1, ip_address = ?2 WHERE id = ?3",
-        params![name, ip_address, id],
+        "UPDATE hosts SET name = ?1, ip_address = ?2, username = ?3, password = ?4 WHERE id = ?5",
+        params![name, ip_address, username, password, id],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+// Modify the username and password of a host in the database
+#[tauri::command]
+pub fn modify_host_credentials(id: i32, username: Option<String>, password: Option<String>) -> Result<(), String> {
+    let conn = Connection::open("inventory.db").map_err(|e| e.to_string())?;
+    conn.execute(
+        "UPDATE hosts SET username = ?1, password = ?2 WHERE id = ?3",
+        params![username, password, id],
     )
     .map_err(|e| e.to_string())?;
     Ok(())

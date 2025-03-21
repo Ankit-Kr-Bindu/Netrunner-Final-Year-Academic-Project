@@ -34,7 +34,7 @@ pub fn get_groups_with_hosts() -> Result<Vec<GroupWithHosts>, String> {
     for group in groups {
         let mut stmt = conn
             .prepare(
-                "SELECT h.id, h.name, h.ip_address
+                "SELECT h.id, h.name, h.ip_address, h.username, h.password
                  FROM hosts h
                  JOIN group_host gh ON h.id = gh.host_id
                  WHERE gh.group_id = ?1",
@@ -46,6 +46,8 @@ pub fn get_groups_with_hosts() -> Result<Vec<GroupWithHosts>, String> {
                     id: row.get(0)?,
                     name: row.get(1)?,
                     ip_address: row.get(2)?,
+                    username: row.get(3)?,
+                    password: row.get(4)?,
                 })
             })
             .map_err(|e| e.to_string())?

@@ -22,6 +22,7 @@ pub fn run() {
             inventory::modify_host,
             inventory::remove_group,
             inventory::modify_group,
+            inventory::modify_host_credentials,
             fetch_inventory:: get_groups_with_hosts,
             inventory::assign_host_to_group,
             inventory::reassign_host_to_group,

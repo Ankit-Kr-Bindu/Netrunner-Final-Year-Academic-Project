@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::process::Command;
-use crate::inventory::{Host, Group};
+use crate::inventory::Host;
 use crate::fetch_inventory::GroupWithHosts;
 use rusqlite::{params, Connection, Result};
 
@@ -20,7 +20,13 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
     for host_id in params.hosts {
         // Fetch host details from the database
         let host = get_host_by_id(host_id).map_err(|e| e.to_string())?;
-        inventory.push_str(&format!("{} ansible_host={}\n", host.name, host.ip_address.unwrap_or_default()));
+        inventory.push_str(&format!(
+            "{} ansible_host={} ansible_user={} ansible_ssh_pass={}\n",
+            host.name,
+            host.ip_address.unwrap_or_default(),
+            host.username.unwrap_or_default(),
+            host.password.unwrap_or_default()
+        ));
     }
 
     // Add groups to the inventory
@@ -29,7 +35,13 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
         let group = get_group_by_id(group_id).map_err(|e| e.to_string())?;
         inventory.push_str(&format!("[{}]\n", group.name));
         for host in group.hosts {
-            inventory.push_str(&format!("{} ansible_host={}\n", host.name, host.ip_address.unwrap_or_default()));
+            inventory.push_str(&format!(
+                "{} ansible_host={} ansible_user={} ansible_ssh_pass={}\n",
+                host.name,
+                host.ip_address.unwrap_or_default(),
+                host.username.unwrap_or_default(),
+                host.password.unwrap_or_default()
+            ));
         }
     }
 
@@ -55,12 +67,14 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
 // Fetch host details from the database
 fn get_host_by_id(id: i32) -> Result<Host, rusqlite::Error> {
     let conn = Connection::open("inventory.db")?;
-    let mut stmt = conn.prepare("SELECT id, name, ip_address FROM hosts WHERE id = ?1")?;
+    let mut stmt = conn.prepare("SELECT id, name, ip_address, username, password FROM hosts WHERE id = ?1")?;
     stmt.query_row(params![id], |row| {
         Ok(Host {
             id: row.get(0)?,
             name: row.get(1)?,
             ip_address: row.get(2)?,
+            username: row.get(3)?,
+            password: row.get(4)?,
         })
     })
 }
@@ -79,7 +93,7 @@ fn get_group_by_id(id: i32) -> Result<GroupWithHosts, rusqlite::Error> {
 
     // Fetch hosts for the group
     let mut stmt = conn.prepare(
-        "SELECT h.id, h.name, h.ip_address
+        "SELECT h.id, h.name, h.ip_address, h.username, h.password
          FROM hosts h
          JOIN group_host gh ON h.id = gh.host_id
          WHERE gh.group_id = ?1",
@@ -89,6 +103,8 @@ fn get_group_by_id(id: i32) -> Result<GroupWithHosts, rusqlite::Error> {
             id: row.get(0)?,
             name: row.get(1)?,
             ip_address: row.get(2)?,
+            username: row.get(3)?,
+            password: row.get(4)?,
         })
     })?
     .collect::<Result<Vec<Host>, _>>()?;
