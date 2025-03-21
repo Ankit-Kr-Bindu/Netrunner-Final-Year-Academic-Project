@@ -1,6 +1,7 @@
 mod fetch_playbooks;
 mod inventory;
 mod fetch_inventory;
+mod run_playbook;
 
 pub fn run() {
     // Initialize the database
@@ -21,11 +22,12 @@ pub fn run() {
             inventory::modify_host,
             inventory::remove_group,
             inventory::modify_group,
-            fetch_inventory::fetch_inventory,
+            fetch_inventory:: get_groups_with_hosts,
             inventory::assign_host_to_group,
             inventory::reassign_host_to_group,
             inventory::remove_host_from_group,
             inventory::view_inventory,
+            run_playbook::run_ansible_playbook,
         ])
         .setup(|_app| {
             // Disable icon loading

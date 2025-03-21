@@ -3,6 +3,8 @@ import Sidebar from "./components/Sidebar";
 import Inventory from "./components/Inventory";
 import PlaybookSelector from "./components/PlaybookSelector";
 import InventorySelector from "./components/InventorySelector";
+import PlaybookRunner from "./components/Playbookrunner";
+
 import "./main.css"; // Ensure you are importing the main.css file
 
 function App() {
@@ -22,10 +24,11 @@ function App() {
       <main className="flex-1 p-4 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-4">{selectedItem}</h1>
         {selectedItem === " Run Playbooks" ? (
-          <>
-          <PlaybookSelector setSelectedPlaybook={setSelectedPlaybook} />
-          <InventorySelector />
-          </>
+          // <>
+          // <PlaybookSelector setSelectedPlaybook={setSelectedPlaybook} />
+          // <InventorySelector />
+          // </>
+          <PlaybookRunner/>
         ) : selectedItem === "Inventory Manager" ? (
           <Inventory />
         ) : selectedItem === "Dashboard" ? (
