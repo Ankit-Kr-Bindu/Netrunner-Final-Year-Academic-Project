@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_yaml::to_string;
 use std::process::Command;
 use std::path::Path;
 use crate::inventory::Host;
@@ -20,39 +21,58 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
         return Err(format!("Playbook not found at: {}", playbook_path.display()));
     }
 
-    // Construct inventory
-    let mut inventory = String::new();
+    // Construct inventory in YAML format
+    let mut inventory = serde_yaml::Mapping::new();
 
     // Add hosts
+    let mut hosts_mapping = serde_yaml::Mapping::new();
     for host_id in params.hosts {
         let host = get_host_by_id(host_id).map_err(|e| e.to_string())?;
-        inventory.push_str(&format!(
-            "{} ansible_host={} ansible_user={} ansible_ssh_pass={}\n",
-            host.name,
-            host.ip_address.unwrap_or_default(),
-            host.username.unwrap_or_default(),
-            host.password.unwrap_or_default()
-        ));
+        let mut host_details = serde_yaml::Mapping::new();
+        host_details.insert(
+            serde_yaml::Value::String("ansible_host".to_string()),
+            serde_yaml::Value::String(host.ip_address.unwrap_or_default()),
+        );
+        host_details.insert(
+            serde_yaml::Value::String("ansible_user".to_string()),
+            serde_yaml::Value::String(host.username.unwrap_or_default()),
+        );
+        host_details.insert(
+            serde_yaml::Value::String("ansible_ssh_pass".to_string()),
+            serde_yaml::Value::String(host.password.unwrap_or_default()),
+        );
+        host_details.insert(
+            serde_yaml::Value::String("ansible_connection".to_string()),
+            serde_yaml::Value::String("network_cli".to_string()),
+        );
+        host_details.insert(
+            serde_yaml::Value::String("ansible_network_os".to_string()),
+            serde_yaml::Value::String("ios".to_string()),
+        );
+        hosts_mapping.insert(serde_yaml::Value::String(host.name), serde_yaml::Value::Mapping(host_details));
     }
 
     // Add groups
+    let mut groups_mapping = serde_yaml::Mapping::new();
     for group_id in params.groups {
         let group = get_group_by_id(group_id).map_err(|e| e.to_string())?;
-        inventory.push_str(&format!("[{}]\n", group.name));
+        let mut group_hosts = serde_yaml::Mapping::new();
         for host in group.hosts {
-            inventory.push_str(&format!(
-                "{} ansible_host={} ansible_user={} ansible_ssh_pass={}\n",
-                host.name,
-                host.ip_address.unwrap_or_default(),
-                host.username.unwrap_or_default(),
-                host.password.unwrap_or_default()
-            ));
+            group_hosts.insert(serde_yaml::Value::String(host.name), serde_yaml::Value::Null);
         }
+        groups_mapping.insert(serde_yaml::Value::String(group.name), serde_yaml::Value::Mapping(group_hosts));
     }
 
-    // Write temporary inventory
-    let inventory_path = "/tmp/inventory.ini";
-    std::fs::write(inventory_path, inventory).map_err(|e| e.to_string())?;
+    // Combine hosts and groups into the "all" key
+    let mut all_mapping = serde_yaml::Mapping::new();
+    all_mapping.insert(serde_yaml::Value::String("hosts".to_string()), serde_yaml::Value::Mapping(hosts_mapping));
+    all_mapping.insert(serde_yaml::Value::String("children".to_string()), serde_yaml::Value::Mapping(groups_mapping));
+    inventory.insert(serde_yaml::Value::String("all".to_string()), serde_yaml::Value::Mapping(all_mapping));
+
+    // Write inventory to a YAML file
+    let inventory_path = "/tmp/inventory.yml";
+    let inventory_yaml = to_string(&inventory).map_err(|e| e.to_string())?;
+    std::fs::write(inventory_path, inventory_yaml).map_err(|e| e.to_string())?;
 
     // Execute playbook
     let output = Command::new("ansible-playbook")

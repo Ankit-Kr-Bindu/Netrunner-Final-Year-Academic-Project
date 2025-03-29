@@ -1,9 +1,0 @@
----
-- name: Gather information about the Mac PC
-  hosts: all
-  gather_facts: true
-
-  tasks:
-    - name: Print gathered facts
-      debug:
-        var: ansible_facts
