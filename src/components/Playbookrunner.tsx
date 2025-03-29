@@ -35,7 +35,9 @@ const PlaybookRunner: React.FC = () => {
   useEffect(() => {
     const fetchPlaybooks = async () => {
       try {
+        console.log('Fetching playbooks...');
         const playbooks = await invoke<string[]>("list_playbooks");
+        console.log('Received playbooks:', playbooks);
         setPlaybooks(playbooks);
       } catch (error) {
         console.error("Error fetching playbooks:", error);

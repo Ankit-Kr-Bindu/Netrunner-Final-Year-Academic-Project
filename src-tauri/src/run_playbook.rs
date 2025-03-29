@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::process::Command;
-use std::path::{Path, PathBuf};
-use tauri::api::path::resource_dir;
+use std::path::Path;
 use crate::inventory::Host;
 use crate::fetch_inventory::GroupWithHosts;
 use rusqlite::{params, Connection, Result};
@@ -71,10 +70,10 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
 }
 
 #[tauri::command]
-fn get_playbook_path(playbook_name: String) -> Result<String, String> {
-    let mut path = std::env::current_dir()
+pub fn get_playbook_path(playbook_name: String) -> Result<String, String> {
+    let path = std::env::current_dir()
         .map_err(|e| e.to_string())?
-        .join("src-tauri")
+
         .join("playbooks")
         .join(playbook_name);
     
@@ -86,25 +85,31 @@ fn get_playbook_path(playbook_name: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn list_playbooks() -> Result<Vec<String>, String> {
-    let mut path = std::env::current_dir()
+pub fn list_playbooks() -> Result<Vec<String>, String> {
+    let path = std::env::current_dir()
         .map_err(|e| e.to_string())?
-        .join("src-tauri")
-        .join("playbooks");
+        .join("ansible-playbooks");
+    
+    println!("Looking for playbooks in: {}", path.display());
     
     let mut playbooks = Vec::new();
     if let Ok(entries) = std::fs::read_dir(path) {
         for entry in entries.flatten() {
             if let Some(name) = entry.path().file_name() {
-                let ext = entry.path().extension()
-                    .and_then(|s| s.to_str())
-                    .unwrap_or("");
-                if ext == "yml" || ext == "yaml" {
-                    playbooks.push(name.to_string_lossy().into_owned());
+                let path = entry.path();
+                println!("Found file: {}", path.display());
+                if let Some(ext) = path.extension() {
+                    if let Some(ext_str) = ext.to_str() {
+                        if ext_str == "yml" || ext_str == "yaml" {
+                            playbooks.push(name.to_string_lossy().into_owned());
+                            println!("Added playbook: {}", name.to_string_lossy());
+                        }
+                    }
                 }
             }
         }
     }
+    println!("Total playbooks found: {}", playbooks.len());
     Ok(playbooks)
 }
 
