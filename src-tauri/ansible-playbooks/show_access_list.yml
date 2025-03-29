@@ -1,6 +1,6 @@
 - name: Show Access Lists
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Show Access Lists
       ios_command:

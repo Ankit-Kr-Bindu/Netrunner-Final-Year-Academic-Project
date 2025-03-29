@@ -1,6 +1,6 @@
 - name: Show Logging
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Show Logging
       ios_command:

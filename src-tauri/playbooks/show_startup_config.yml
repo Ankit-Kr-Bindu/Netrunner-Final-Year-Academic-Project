@@ -1,17 +1,17 @@
-- name: Show Running Config
+- name: Show Startup Config
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
-    - name: Show Running Config
+    - name: Show Startup Config
       ios_command:
         commands:
-          - show running-config
+          - show startup-config
       register: running_config_result
       tags:
-        - sh_run
+        - sh_startup
 
     - name: Display result
       debug:
         var: running_config_result.stdout_lines
       tags:
-        - sh_run
+        - sh_startup

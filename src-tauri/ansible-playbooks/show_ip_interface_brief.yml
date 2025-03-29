@@ -1,6 +1,6 @@
 - name: Show IP Interface Brief
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Show IP Interface Brief
       ios_command:

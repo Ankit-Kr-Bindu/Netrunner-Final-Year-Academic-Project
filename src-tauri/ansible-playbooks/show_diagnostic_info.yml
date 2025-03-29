@@ -1,7 +1,7 @@
 # diagnostics.yml
 - name: Show Diagnostic Information
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Show Diagnostic Result
       ios_command:

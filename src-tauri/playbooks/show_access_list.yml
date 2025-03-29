@@ -1,0 +1,9 @@
+- name: Show Access Lists
+  hosts: "{{ target }}"
+  gather_facts: false
+  tasks:
+    - name: Show Access Lists
+      ios_command:
+        commands:
+          - show access-lists
+      register: acl_info

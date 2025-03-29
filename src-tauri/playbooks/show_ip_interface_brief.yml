@@ -1,17 +1,17 @@
-- name: Show Vlan Brief
+- name: Show IP Interface Brief
   hosts: "{{ target }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
-    - name: Show Vlan Brief
+    - name: Show IP Interface Brief
       ios_command:
         commands:
-          - show vlans
+          - show ip interface brief
       register: running_config_result
       tags:
-        - sh_vlans
+        - sh_ip_int_br
 
     - name: Display result
       debug:
         var: running_config_result.stdout_lines
       tags:
-        - sh_vlans
+        - sh_ip_int_br

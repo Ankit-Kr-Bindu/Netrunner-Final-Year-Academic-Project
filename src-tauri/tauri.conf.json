@@ -20,7 +20,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; frame-src http://192.168.109.128:3000;"
     }
   },
   "bundle": {
@@ -32,6 +32,7 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": ["/src-tauri/ansible-playbooks/**"]
   }
 }

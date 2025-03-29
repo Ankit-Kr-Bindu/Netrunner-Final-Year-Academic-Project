@@ -1,0 +1,11 @@
+- name: Show DHCP Binding
+  hosts: "{{ target }}"
+  gather_facts: false
+  tasks:
+    - name: Show DHCP Binding
+      ios_command:
+        commands:
+          - show ip dhcp binding
+      register: dhcp_bindings
+      tags:
+        - sh_dhcp_binding 

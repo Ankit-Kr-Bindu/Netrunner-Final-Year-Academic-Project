@@ -1,0 +1,11 @@
+- name: Show Logging
+  hosts: "{{ target }}"
+  gather_facts: false
+  tasks:
+    - name: Show Logging
+      ios_command:
+        commands:
+          - show logging
+      register: logging_info
+      tags:
+        - sh_logging  

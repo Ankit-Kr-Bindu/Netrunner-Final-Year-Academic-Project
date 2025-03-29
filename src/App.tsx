@@ -1,10 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Inventory from "./components/Inventory";
-import PlaybookSelector from "./components/PlaybookSelector";
-import InventorySelector from "./components/InventorySelector";
 import PlaybookRunner from "./components/Playbookrunner";
-
 import "./main.css"; // Ensure you are importing the main.css file
 
 function App() {

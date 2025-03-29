@@ -1,7 +1,7 @@
-mod fetch_playbooks;
 mod inventory;
 mod fetch_inventory;
 mod run_playbook;
+
 
 pub fn run() {
     // Initialize the database
@@ -13,7 +13,6 @@ pub fn run() {
     // Run Tauri application
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            fetch_playbooks::list_playbooks,
             inventory::add_host,
             inventory::get_hosts,
             inventory::add_group,
@@ -29,6 +28,8 @@ pub fn run() {
             inventory::remove_host_from_group,
             inventory::view_inventory,
             run_playbook::run_ansible_playbook,
+            run_playbook::get_playbook_path,
+            run_playbook::list_playbooks,
         ])
         .setup(|_app| {
             // Disable icon loading
