@@ -5,6 +5,7 @@ use std::path::Path;
 use crate::inventory::Host;
 use crate::fetch_inventory::GroupWithHosts;
 use rusqlite::{params, Connection, Result};
+use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RunPlaybookParams {
@@ -13,12 +14,23 @@ pub struct RunPlaybookParams {
     pub groups: Vec<i32>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CommandResponse {
+    pub success: bool,
+    pub message: String,
+    pub output: Option<String>,
+}
+
 #[tauri::command]
-pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String> {
+pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<CommandResponse, String> {
     // Verify playbook exists
     let playbook_path = Path::new(&params.playbook);
     if !playbook_path.exists() {
-        return Err(format!("Playbook not found at: {}", playbook_path.display()));
+        return Ok(CommandResponse {
+            success: false,
+            message: format!("Playbook not found at: {}", playbook_path.display()),
+            output: None,
+        });
     }
 
     // Construct inventory in YAML format
@@ -31,15 +43,15 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
         let mut host_details = serde_yaml::Mapping::new();
         host_details.insert(
             serde_yaml::Value::String("ansible_host".to_string()),
-            serde_yaml::Value::String(host.ip_address.unwrap_or_default()),
+            serde_yaml::Value::String(host.ip_address.map_or(String::new(), |s| s)),
         );
         host_details.insert(
             serde_yaml::Value::String("ansible_user".to_string()),
-            serde_yaml::Value::String(host.username.unwrap_or_default()),
+            serde_yaml::Value::String(host.username.map_or(String::new(), |s| s)),
         );
         host_details.insert(
             serde_yaml::Value::String("ansible_ssh_pass".to_string()),
-            serde_yaml::Value::String(host.password.unwrap_or_default()),
+            serde_yaml::Value::String(host.password.map_or(String::new(), |s| s)),
         );
         host_details.insert(
             serde_yaml::Value::String("ansible_connection".to_string()),
@@ -48,6 +60,10 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
         host_details.insert(
             serde_yaml::Value::String("ansible_network_os".to_string()),
             serde_yaml::Value::String("ios".to_string()),
+        );
+        host_details.insert(
+            serde_yaml::Value::String("ansible_ssh_common_args".to_string()),
+            serde_yaml::Value::String("-oKexAlgorithms=diffie-hellman-group1-sha1,diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -oMACs=hmac-sha1,hmac-sha1-96".to_string()),
         );
         hosts_mapping.insert(serde_yaml::Value::String(host.name), serde_yaml::Value::Mapping(host_details));
     }
@@ -70,7 +86,7 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
     inventory.insert(serde_yaml::Value::String("all".to_string()), serde_yaml::Value::Mapping(all_mapping));
 
     // Write inventory to a YAML file
-    let inventory_path = "/tmp/inventory.yml";
+    let inventory_path = "./inventory.yml";
     let inventory_yaml = to_string(&inventory).map_err(|e| e.to_string())?;
     std::fs::write(inventory_path, inventory_yaml).map_err(|e| e.to_string())?;
 
@@ -83,18 +99,25 @@ pub fn run_ansible_playbook(params: RunPlaybookParams) -> Result<String, String>
         .map_err(|e| e.to_string())?;
 
     if output.status.success() {
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        Ok(CommandResponse {
+            success: true,
+            message: "Playbook executed successfully".to_string(),
+            output: Some(String::from_utf8_lossy(&output.stdout).to_string()),
+        })
     } else {
-        Err(String::from_utf8_lossy(&output.stderr).to_string())
+        Ok(CommandResponse {
+            success: false,
+            message: "Playbook execution failed".to_string(),
+            output: Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        })
     }
 }
 
 #[tauri::command]
-pub fn get_playbook_path(playbook_name: String) -> Result<String, String> {
-    let path = std::env::current_dir()
-        .map_err(|e| e.to_string())?
-
-        .join("playbooks")
+pub fn get_playbook_path(playbook_name: String, app: tauri::AppHandle) -> Result<String, String> {
+    let path = app.path().app_local_data_dir()
+        .map_or_else(|_| Err("Could not find app directory".to_string()), |dir| Ok(dir))?
+        .join("ansible-playbooks")
         .join(playbook_name);
     
     if path.exists() {
@@ -105,15 +128,15 @@ pub fn get_playbook_path(playbook_name: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-pub fn list_playbooks() -> Result<Vec<String>, String> {
-    let path = std::env::current_dir()
-        .map_err(|e| e.to_string())?
+pub fn list_playbooks(app: tauri::AppHandle) -> Result<Vec<String>, String> {
+    let resource_path = app.path().app_local_data_dir()
+        .map_or_else(|_| Err("Could not find app directory".to_string()), |dir| Ok(dir))?
         .join("ansible-playbooks");
     
-    println!("Looking for playbooks in: {}", path.display());
+    println!("Looking for playbooks in: {}", resource_path.display());
     
     let mut playbooks = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(path) {
+    if let Ok(entries) = std::fs::read_dir(resource_path) {
         for entry in entries.flatten() {
             if let Some(name) = entry.path().file_name() {
                 let path = entry.path();

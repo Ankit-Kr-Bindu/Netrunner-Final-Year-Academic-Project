@@ -69,12 +69,20 @@ const Inventory: React.FC = () => {
 
   const addHost = async () => {
     try {
-      await invoke("add_host", {
+      console.log("Adding host with values:", {
         name: newHostName,
         ip_address: newHostIp,
         username: newHostUsername,
         password: newHostPassword,
       });
+      
+      await invoke("add_host", {
+        name: newHostName,
+        ip_address: newHostIp || null,
+        username: newHostUsername || null,
+        password: newHostPassword || null,
+      });
+      
       fetchHosts();
       setNewHostName("");
       setNewHostIp("");

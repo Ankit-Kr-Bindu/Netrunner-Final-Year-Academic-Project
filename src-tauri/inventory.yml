@@ -1,0 +1,10 @@
+all:
+  hosts:
+    Office_main_router:
+      ansible_host: 192.168.1.115
+      ansible_user: admin
+      ansible_ssh_pass: admin
+      ansible_connection: network_cli
+      ansible_network_os: ios
+      ansible_ssh_common_args: -oKexAlgorithms=diffie-hellman-group1-sha1,diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -oMACs=hmac-sha1,hmac-sha1-96
+  children: {}

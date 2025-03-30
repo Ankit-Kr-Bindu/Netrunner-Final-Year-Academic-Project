@@ -35,7 +35,7 @@ const HostForm: React.FC<HostFormProps> = ({
         />
         <input
           type="text"
-          placeholder="IP Address (optional)"
+          placeholder="IP Address"
           value={newHostIp}
           onChange={(e) => setNewHostIp(e.target.value)}
           className="p-2 border rounded bg-white dark:bg-transparent dark:text-white"
