@@ -133,7 +133,7 @@ human error, while prioritizing security, performance, and scalability.
   will free up time for innovative and strategic planning for network
   engineers.
 
-System Architecture
+## System Architecture
 
 The architecture of Netrunner is designed to provide a seamless,
 efficient, and secure environment for network task automation, utilizing
@@ -141,7 +141,7 @@ modern technologies across four key layers -- frontend, backend,
 automation, and database. The diagram below illustrates the flow of
 information and tasks within the system.
 <figure>
-<img src="media/image5.png" style="width:6.58926in;height:3.70435in"
+<img src="system.png" style="width:6.58926in;height:3.70435in"
 alt="A computer network diagram with a computer and a computer AI-generated content may be incorrect." />
 <figcaption><p>: Demonstration of System Design.</p></figcaption>
 </figure>
@@ -506,7 +506,7 @@ Netrunner tool, particularly for its intuitive GUI, ease of use, and
 effective playbook execution features. Constructive suggestions will
 inform future enhancements in usability and functionality.
 
-## 3.5 Requirement Analysis
+##  Requirement Analysis
 
 The process of requirement analysis combines user-based system needs
 understanding with stakeholder and technical group requirements that
@@ -533,7 +533,7 @@ requirements:
 
 - **Operating System:** Debian/ MacOS
 
-### 3.5.2 Software Requirements
+###  Software Requirements
 
 - **IDE**: Visual Studio Code,
 
