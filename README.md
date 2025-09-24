@@ -143,7 +143,7 @@ information and tasks within the system.
 <figure>
 <img src="system.png" style="width:6.58926in;height:3.70435in"
 alt="A computer network diagram with a computer and a computer AI-generated content may be incorrect." />
-<figcaption><p>: Demonstration of System Design.</p></figcaption>
+<figcaption><p>           Demonstration of System Design.</p></figcaption>
 </figure>
 
 The following are the major components of the system that made possible
