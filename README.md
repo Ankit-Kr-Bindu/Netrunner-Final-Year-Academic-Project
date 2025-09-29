@@ -36,9 +36,7 @@ infrastructures make manual management impractical. Automation is
 essential for initial setup and ongoing management, boosting operational
 efficiency and reducing human error.
 
-For supporting statistics and trends on the growing necessity of
-automation in networking and IT infrastructure, please refer to
-[**Appendix 2**](#appendix-2).
+
 
 ## Problem Domain and Project as a Solution
 
@@ -47,9 +45,7 @@ offering a unified automation tool that leverages Ansible, Rust, and
 React, enhancing operational efficiency, minimizing errors, and
 promoting proactive network management.
 
-For detailed insights into the challenges of KTLO operations and
-interface configuration complexities in modern networks, please refer to
-[**Appendix 1**](#appendix-1).
+
 
 ### Problem Analysis
 
@@ -216,9 +212,6 @@ tasks before recording results. The application combines all its steps
 through seamless integration between frontend and backend, so users get
 a smooth experience while automation runs reliably.
 
-**\[Note:** For a detailed breakdown of the system workflow and
-execution flow, please refer to [Appendix 11](#appendix-11).**\]**
-
 ##  Technical Components and Tools 
 
 The development of Netrunner used a contemporary technology
@@ -231,8 +224,7 @@ architectural components and framework selections to boost system
 usability along with performance speed and add scalability
 functionality.
 
-**\[Note:** For detailed information, Refer to [Appendix
-10](#appendix-10)**\]**
+
 
 ##  Similar Projects 
 
@@ -243,8 +235,7 @@ automation---system-level configuration and enterprise-level network
 orchestration---serving as valuable comparisons to Netrunner\'s
 objectives and scope.
 
-**\[Note:** For full descriptions and visual references, please refer to
-[Appendix 4](#_6.5_Appendix_4).**\]**
+
 
 ##  Comparison between Projects 
 
@@ -254,8 +245,7 @@ automation capabilities. This comparison helps position Netrunner in the
 broader context of network automation tools, especially for small to
 medium-scale environments.
 
-**\[Note:** For a detailed comparison table, please refer to [Appendix
-5](#_6.4_Appendix_5).**\]**
+
 
 ###  Why Netrunner? 
 
