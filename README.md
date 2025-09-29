@@ -317,26 +317,6 @@ while the development team gets formed. The project initiation phase
 establishes a common vision between all stakeholders regarding both the
 project objectives and the established goals.
 
-+-------------+--------------------------------------------------------+
-| Overall     | - Define the product vision, gather initial            |
-| Goal        |   requirements and identify key stakeholders to set a  |
-|             |   clear direction for the project and develop a        |
-|             |   foundational framework for planning and executing    |
-|             |   the project                                          |
-+=============+========================================================+
-| Expected    | - A comprehensive Product Backlog outlines the core    |
-| Overall     |   features and functionalities.                        |
-| Outcome     |                                                        |
-|             | - Clear understanding of project scope, targeted user, |
-|             |   and key business objectives.                         |
-|             |                                                        |
-|             | - Identification of project risk and strategies for    |
-|             |   early mitigation.                                    |
-|             |                                                        |
-|             | - Defined communication plan and project timeline      |
-|             |   aligned with sprint-based delivery.                  |
-+-------------+--------------------------------------------------------+
-
 
 ###  Planning and Estimation 
 
